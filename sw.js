@@ -4,7 +4,7 @@
    带 ?v= 的脚本/样式始终走网络，确保版本更新后立即生效。
    版本号变化（CACHE 常量）时自动清掉旧缓存。
    ========================================================= */
-const CACHE = 'pw-v-20261116c';
+const CACHE = 'pw-v-20261116d';
 const CORE = [
   './', 'index.html', 'css/app.css',
   'manifest.webmanifest',
