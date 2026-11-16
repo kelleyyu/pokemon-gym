@@ -232,6 +232,7 @@ PW.sync = (function () {
         if (remote && remote.data && !isEmptyArchive(remote.data)) {
           PW.store.replaceAll(remote.data);
           _lastRemoteAt = remote.updatedAt || 0;
+          _lastPushError = ''; _lastPullError = '';
           setStatus('已阻止空档覆盖云端，改用云端数据', '');
           busy = false;
           return true;
@@ -243,7 +244,7 @@ PW.sync = (function () {
         headers: Object.assign(headers(), { 'Prefer': 'resolution=merge-duplicates, return=minimal' }),
         body: JSON.stringify(payload)
       });
-      if (r.ok || r.status === 201 || r.status === 204) { lastPush = Date.now(); _lastLocalPushAt = Date.now(); setStatus('已同步到云端', ''); return true; }
+      if (r.ok || r.status === 201 || r.status === 204) { lastPush = Date.now(); _lastLocalPushAt = Date.now(); _lastPushError = ''; setStatus('已同步到云端', ''); return true; }
       _lastPushError = 'pushSupabase HTTP ' + r.status;
       setStatus('同步失败（本地已存）', 'err'); return false;
     } catch (e) { _lastPushError = 'pushSupabase: ' + (e && e.message || e); setStatus('离线 · 本地已存', 'off'); return false; }
@@ -356,6 +357,7 @@ PW.sync = (function () {
       PW.store.replaceAll(merged);
       _lastRemoteAt = Math.max(_lastRemoteAt, rUpd);
       _lastSyncAt = Date.now();
+      _lastPullError = ''; _lastPushError = '';
       setStatus(backend === 'supabase' ? '已同步云端最新' : '已同步服务器最新', '');
       if (PW.app && PW.app.forceRender) PW.app.forceRender();
       pushUnion();
@@ -375,6 +377,7 @@ PW.sync = (function () {
       _lastRemoteAt = Math.max(_lastRemoteAt, rUpd);
       _lastSyncAt = Date.now();
       _lastSyncMsg = '已同步云端最新 ' + new Date().toLocaleTimeString();
+      _lastPullError = ''; _lastPushError = '';
       setStatus(backend === 'supabase' ? '已同步云端最新' : '已同步服务器最新', '');
       if (PW.app && PW.app.forceRender) PW.app.forceRender();
       pushUnion();
